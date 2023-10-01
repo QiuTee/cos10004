@@ -1,0 +1,223 @@
+      mov R0, #0 
+      mov R10, #0 
+      MOV R3 , #1 
+      PUSH { R0 , R10, R3 , R4 , R5 } 
+///// input output of codemaker'name
+      MOV R0, #namemaker
+      MOV R10, #codemaker
+      BL codeinout
+      BL printname
+      B start
+continue:               ///// input output of codebreaker'name
+      mov r0 , #0
+      mov r10, #0
+      mov r1, #0 
+      PUSH { R0 , R3 }
+      MOV R0, #namebreaker
+      MOV R10, #codebreaker 
+      BL codeinout
+      BL printname2
+      PUSH {R3 }
+      MOV R9, #number
+      BL nbinput
+      BL nboutput
+      BL getcode1
+      BL query
+      B endgame
+codeinout:
+      STR R0, .WriteString
+      STR R10, .ReadString
+      PUSH { R10 } 
+      RET 
+printname:              // print name codemaker 
+      MOV R3, #readnamemaker
+      STR R3, .WriteString
+      STR R10, .WriteString
+      MOV R4, #newline
+      STR R4, .WriteString
+      STR R10, .WriteString
+      mov r5, #secretcode1
+      str r5, .WriteString
+      POP { R0 , R10 , R3 , R4, R5}
+      RET
+printname2:             //print name codebreaker 
+      MOV R3, #readnamebreaker
+      STR R3, .WriteString
+      STR R10, .WriteString
+      POP { R10 }
+      POP { R0 , R3 }
+      RET
+nbinput: 
+      STR R9, .WriteString
+      LDR R9, .InputNum
+      PUSH { R9 } 
+      RET
+nboutput:
+      MOV R3, #readnumber
+      STR R3, .WriteString
+      STR R9, .WriteUnsignedNum
+      POP {R9}
+      POP { R3 }
+      RET
+start:
+      MOV R2, #arrayCharacter
+      LDR R1, arrayLength
+      mov R7 , #0
+      mov R8, #0
+      BL getcode
+      BL secret
+      B continue
+getcode:
+      PUSH { R3, R5, R6 ,R7, R8 ,LR }
+loop:
+      mov r4 , #code2
+      str r4, .ReadString
+      mov R7 , #0
+      mov R8, #0
+      BL reset
+loop2:                  //checking condition 
+      LDRB R6, [R4 + R7 ]
+      CMP R6, #0
+      BEQ loop
+      LDR R5 , [ R2 + R8 ]
+      CMP R5, R6
+      BEQ jump
+      BNE check
+jump:
+      BL reset
+      add R7 , R7 , #1
+      cmp R7, #4
+      BEQ character5
+      BLT loop2
+character5:             // checking condition for character 5 
+      ldrb R6, [R4 + #4]
+      cmp R6, #0
+      BEQ end
+      BGT loop
+check: 
+      add R8, R8, #4
+      cmp R8 , #24
+      BEQ loop
+      BLT loop2
+end:
+      POP { R3, R5, R6 ,R7, R8 ,LR } // return back to the getcode function 
+      RET
+secret:                 // move the codesecrect entered into the array 
+      PUSH { R4 , R5 , R6 , R8 }
+      MOV R5, #0 
+      MOV R6 , #0 
+      MOV R7 , #secretcode
+      PUSH { R7 }
+array1: 
+      LDRB R8 , [ R4 + R5] 
+      STR R8 , [ R7 + R6 ] 
+      ADD R6 , R6 , #4 
+      ADD R5, R5 , #1 
+      CMP R5 , #4
+      BLT array1 
+      POP { R7 }
+      POP { R4 , R5 , R6 , R8 }
+      RET
+getcode1:
+      PUSH { R3, R5, R6 ,R7, R8 , R12 , R11 , LR }
+loop9:
+      mov r1, #querycode1
+      str r1, .WriteString
+loop3:
+      mov r4 , #code2
+      str r4, .ReadString
+      mov R7 , #0
+      mov R8, #0
+      BL reset
+loop4:                  //checking condition 
+      LDRB R6, [R4 + R7 ]
+      CMP R6, #0
+      BEQ loop
+      LDR R5 , [ R2 + R8 ]
+      CMP R5, R6
+      BEQ jump1
+      BNE check1
+jump1:
+      BL reset
+      add R7 , R7 , #1
+      cmp R7, #4
+      BEQ character51
+      BLT loop4
+character51:            // checking condition for character 5 
+      ldrb R6, [R4 + #4]
+      cmp R6, #0
+      BEQ loopsub 
+      BGT loop3
+loopsub:                // sub 1 for when enter code for codebreaker'name
+      BL query
+      sub r9, r9 , #1 
+      str r4, .WriteString
+      mov r12 , #newline
+      str r12 , .WriteString
+      str r10 , .WriteString
+      mov r11, #queryop
+      str r11, .WriteString
+      str r9 , .WriteUnsignedNum
+      cmp r9, #0
+      BEQ end1
+      BGT loop9 
+check1: 
+      add R8, R8, #4
+      cmp R8 , #24
+      BEQ loop3
+      BLT loop4
+end1:
+      POP { R3, R5, R6 ,R7, R8 , R12 , R11 , LR } // return back to the getcode function 
+      RET
+query:                  // move the codequery entered into the array 
+      PUSH { R4 , R5 , R6 , R8 }
+      MOV R5, #0 
+      MOV R6 , #0 
+      MOV R7 , #querycode
+      PUSH { R7 } 
+array9:                 // put code into array of codebraker 
+      LDRB R8 , [ R4 + R5] 
+      STR R8 , [ R7 + R6 ] 
+      ADD R6 , R6 , #4 
+      ADD R5, R5 , #1 
+      CMP R5 , #4
+      BLT array9 
+      POP { R7 } 
+      POP { R4 , R5 , R6 , R8 }
+      RET
+reset:
+      MOV R8 ,#0
+      RET
+endgame:
+      HALT
+      .ALIGN 128
+arrayLength: 6
+arrayCharacter: 98
+      99
+      103
+      112
+      114
+      121
+codesecretLength: 4     //// array for secret code
+secretcode: 0
+      0
+      0
+      0
+codequeryLength: 4      //// array for secret code
+querycode: 0
+      0
+      0
+      0
+code2: .BLOCK 128
+secretcode1: .ASCIZ "\t, please enter a 4-chracter secret code: "
+namebreaker: .ASCIZ "\n What is codebreaker name\n"
+namemaker: .ASCIZ "\n What is codemaker name\n"
+number: .ASCIZ "\n What number you want to enter\n"
+readnamebreaker: .ASCIZ "\n Codebreaker is:\n "
+readnamemaker: .ASCIZ "\n Codemaker is: "
+readnumber: .ASCIZ "\n Maximum number of guesses:\n "
+newline: .ASCIZ "\n "
+codemaker: .BLOCK 128
+codebreaker: .BLOCK 128
+querycode1: .ASCIZ " \n Enter code: "
+queryop: .ASCIZ "  , this is guess number: \t "

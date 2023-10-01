@@ -1,0 +1,17 @@
+      MOV R1, #.PixelScreen 
+      MOV R2, #.red
+      MOV R3, #256
+      MOV R5, #128
+loop: 
+      ADD R6, R1, R5 
+      STR R2, [R6] 
+      ADD R5,R5,#256
+      CMP R5, #5248
+      BLT loop
+loop1: 
+      ADD R4, R1, R3 
+      STR R2, [R4] 
+      ADD R3,R3,#4 
+      CMP R3, #336
+      BLT loop1
+      HALT

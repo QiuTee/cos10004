@@ -1,0 +1,12 @@
+      MOV R0, #1
+select: 
+      LDR R2, .Random
+      LSR R2, R2, #30
+      cmp R2, #0
+      BEQ select
+      cmp R0, R2
+      BLT select
+      B condition 
+condition: 
+      mov R3, R1
+      HALT

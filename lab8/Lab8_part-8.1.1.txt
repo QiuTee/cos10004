@@ -1,0 +1,6 @@
+      MOV R0, #15
+      STR R0, .WriteSignedNum
+      MOV R1, #str
+      STR R1, .WriteString
+      HALT
+str:  .ASCIZ "remaining\n"

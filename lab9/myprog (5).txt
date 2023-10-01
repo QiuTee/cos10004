@@ -1,0 +1,45 @@
+      MOV R2, #arrayData
+      MOV R8, #arrayData2
+      MOV R1, #0        // INDEX 
+      MOV R0, #0        // SUM 
+      MOV R4 ,#1
+      MOV R9, #0
+      MOV R5 , #0
+      MOV R7, #arrayLength
+      LDR R6, arrayLength
+arrayLoop: 
+      ADD R1, R1, #4
+      ADD R4 , R4 , #1 
+      CMP R4, R6 
+      BLT arrayLoop
+loop:
+      LDR R3, [R2 + R0 ]
+      STR R3, [R8 + R1]
+      SUB R1, R1, #4
+      ADD R0, R0, #4 
+      ADD R5, R5, #1
+      CMP R5, R6 
+      BLT loop
+      HALT 
+      .ALIGN 256 
+arrayLength: 10 
+arrayData: 9 
+      8
+      7
+      6
+      5
+      4
+      3
+      2
+      1
+      0
+arrayData2: 0
+      0
+      0
+      0
+      0
+      0
+      0
+      0
+      0
+      0

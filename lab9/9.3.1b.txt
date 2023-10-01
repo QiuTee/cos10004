@@ -1,0 +1,16 @@
+      MOV R2, #arrayData
+      MOV R1, #16 
+      LDR R0, [R2 + R1]
+      HALT 
+      .ALIGN 256 
+arrayLength: 10 
+arrayData: 9 
+      8
+      7
+      6
+      5
+      4
+      3
+      2
+      1
+      0
